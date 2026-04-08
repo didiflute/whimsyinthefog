@@ -1,40 +1,6 @@
-const CACHE_NAME = 'recharge-v29';
-const ASSETS = [
-  './',
-  './index.html',
-  './bg.png',
-  './manifest.json',
-  './apple-touch-icon.png',
-  'https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap'
-];
-
-// Install: cache all assets
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
-  );
-  self.skipWaiting();
-});
-
-// Activate: clean old caches
-self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    )
-  );
-  self.clients.claim();
-});
-
-// Fetch: network first, fallback to cache
-self.addEventListener('fetch', e => {
-  e.respondWith(
-    fetch(e.request)
-      .then(res => {
-        const clone = res.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
-        return res;
-      })
-      .catch(() => caches.match(e.request))
-  );
-});
+const CACHE='fogwhimsy-v1';
+const URLS=['./','./index.html','./manifest.json',
+'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+SC:wght@300;400;500&display=swap'];
+self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(URLS)));self.skipWaiting();});
+self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim();});
+self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>caches.match('./index.html'))));});

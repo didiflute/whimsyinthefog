@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="山雾来趣">
+<meta name="theme-color" content="#F9F6F1">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Whimsy in the Fog · 山雾来趣</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F9F6F1;
+  --bg-card: #FDFCFA;
+  --bg-detail: #F5F2EC;
+  --text-1: #3D3530;
+  --text-2: #7A6E62;
+  --text-3: #9B8F82;
+  --border: #E8E2DA;
+  --border-light: #F0EBE4;
+  --font-en: 'Cormorant Garamond', 'Georgia', serif;
+  --font-zh: 'Noto Serif SC', 'Songti SC', serif;
+  --font: var(--font-zh), var(--font-en);
+  --r: 14px;
+  --r-pill: 50px;
+  --shadow: 0 1px 4px rgba(61,53,48,0.04);
+  /* category palette — muted, foggy tones */
+  --c-craft: #C2927A;
+  --c-dance: #B07A93;
+  --c-show: #8B7E9B;
+  --c-music: #6B8F6B;
+  --c-food: #B89B5E;
+  --c-family: #6B859B;
+  --c-wellness: #7BA68E;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1C1A17;
+    --bg-card: #262320;
+    --bg-detail: #1F1D1A;
+    --text-1: #E8E2DA;
+    --text-2: #A89C8F;
+    --text-3: #7D766D;
+    --border: rgba(232,226,218,0.1);
+    --border-light: rgba(232,226,218,0.06);
+    --shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text-1);
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding-bottom: 68px;
+  -webkit-font-smoothing: antialiased;
+}
+.app { max-width:480px; margin:0 auto; padding:0 16px; }
+
+/* header */
+.hdr { padding:20px 0 14px; display:flex; justify-content:space-between; align-items:flex-start; }
+.hdr-en { font-family:var(--font-en); font-size:11px; letter-spacing:3px; color:var(--text-3); font-weight:300; margin-bottom:3px; }
+.hdr-zh { font-family:var(--font-zh); font-size:26px; font-weight:300; color:var(--text-1); letter-spacing:2px; }
+.hdr-sub { font-family:var(--font-en); font-size:12px; color:var(--text-3); margin-top:3px; font-style:italic; font-weight:300; letter-spacing:0.3px; }
+.lang-btn {
+  margin-top:6px; padding:4px 14px; border-radius:var(--r-pill);
+  border:1px solid var(--border); background:transparent;
+  color:var(--text-2); font-size:11px; cursor:pointer;
+  font-family:var(--font-en); letter-spacing:1px; font-weight:400;
+}
+.lang-btn:active { transform:scale(0.95); }
+
+/* search row */
+.search-row { display:flex; gap:8px; margin-bottom:14px; align-items:center; }
+.search-wrap { position:relative; flex:1; }
+.search-wrap svg { position:absolute; left:14px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--text-3); pointer-events:none; }
+.search-input {
+  width:100%; padding:10px 14px 10px 36px; border-radius:var(--r-pill);
+  border:1px solid var(--border); background:var(--bg-card);
+  font-size:13px; font-family:var(--font); color:var(--text-1);
+  outline:none; font-weight:300;
+}
+.search-input:focus { border-color:var(--text-3); }
+.search-input::placeholder { color:var(--text-3); font-style:italic; }
+.qbtns { display:flex; gap:6px; flex-shrink:0; }
+.qbtn {
+  padding:8px 13px; border-radius:var(--r-pill); border:none; cursor:pointer;
+  font-size:12px; font-family:var(--font); background:var(--bg-card);
+  color:var(--text-2); box-shadow:var(--shadow); white-space:nowrap; font-weight:400;
+}
+.qbtn:active { transform:scale(0.95); }
+.qbtn.q-wk { background:#C2927A; color:#FFF8F2; }
+.qbtn.q-tn { background:#8B7E9B; color:#F5F0FA; }
+
+/* calendar bar */
+.cal { background:linear-gradient(135deg,rgba(139,126,155,0.06),rgba(194,146,122,0.06)); border:1px solid rgba(139,126,155,0.1); border-radius:var(--r); padding:14px 16px; margin-bottom:14px; }
+.cal-t { font-family:var(--font-en); font-size:10px; letter-spacing:2.5px; color:#6B5E80; margin-bottom:8px; font-weight:500; }
+.cal-i { display:flex; align-items:center; gap:8px; padding:4px 0; font-size:13px; }
+.cal-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.cal-d { color:#6B5E80; min-width:72px; font-size:12px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:600; letter-spacing:0.2px; }
+.cal-n { flex:1; font-weight:400; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.cal-u { font-size:11px; color:#B5443B; font-weight:600; flex-shrink:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
+
+/* tabs */
+.tabs { display:flex; gap:6px; overflow-x:auto; padding-bottom:6px; margin-bottom:8px; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+.tabs::-webkit-scrollbar { display:none; }
+.tab {
+  flex-shrink:0; padding:6px 16px; border-radius:var(--r-pill); border:1px solid var(--border);
+  cursor:pointer; font-size:12px; font-family:var(--font); background:transparent;
+  color:var(--text-2); font-weight:400;
+}
+.tab:active { transform:scale(0.95); }
+.tab.on { background:var(--text-1); color:var(--bg); border-color:var(--text-1); }
+
+/* filters */
+.flts { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:14px; }
+.flt {
+  padding:3px 10px; border-radius:var(--r-pill); border:1.5px solid transparent;
+  cursor:pointer; font-size:11px; font-family:var(--font); font-weight:400;
+}
+.flt:active { transform:scale(0.95); }
+.flt.on { border-color:currentColor; }
+.flt-clr { padding:3px 10px; border-radius:var(--r-pill); border:1.5px solid #B5443B; cursor:pointer; font-size:11px; background:#FAE8E8; color:#B5443B; font-family:var(--font); }
+
+/* cards */
+.cds { display:flex; flex-direction:column; gap:12px; }
+.cd {
+  background:var(--bg-card); border:1px solid var(--border); border-radius:var(--r);
+  overflow:hidden; box-shadow:var(--shadow); border-left:3px solid transparent;
+}
+.cd.exp { opacity:0.4; filter:grayscale(0.35); }
+.cd-sum { padding:14px 16px; cursor:pointer; }
+.cd-r1 { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:3px; }
+.cd-nm { font-size:15px; font-weight:400; flex:1; line-height:1.4; }
+.cd-ex { font-size:10px; color:var(--text-3); font-weight:300; }
+.cd-da { flex-shrink:0; text-align:right; }
+.cd-db { font-size:12px; font-weight:600; white-space:nowrap; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; letter-spacing:0.3px; }
+.cd-db.ongoing { color:#436335; }
+.cd-db.timed { color:#6B5E80; }
+.cd-db.dead { color:var(--text-3); }
+.cd-urg { font-size:11px; color:#B5443B; font-weight:600; margin-top:2px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
+.cd-ven { font-size:12px; color:var(--text-2); margin-bottom:3px; font-weight:400; }
+.cd-meta { font-size:12px; color:var(--text-2); margin-bottom:6px; font-weight:400; }
+.cd-tags { display:flex; align-items:center; justify-content:space-between; gap:4px; }
+.cd-tl { display:flex; gap:4px; flex-wrap:wrap; align-items:center; }
+.pill { font-size:10px; padding:2px 8px; border-radius:var(--r-pill); font-weight:400; white-space:nowrap; }
+.lead { font-size:10px; padding:2px 8px; border-radius:var(--r-pill); background:#FAE8EB; color:#6E3346; font-weight:400; }
+.cd-hint { font-size:11px; color:var(--text-3); flex-shrink:0; margin-left:8px; font-weight:300; }
+
+/* card detail */
+.cd-det { border-top:1px solid var(--border-light); padding:14px 16px; background:var(--bg-detail); }
+.det-r { font-size:13px; color:var(--text-2); margin-bottom:6px; line-height:1.5; font-weight:300; }
+.det-note { font-size:13px; color:var(--text-1); margin-bottom:10px; line-height:1.8; font-weight:300; }
+.det-addr { margin-bottom:10px; }
+.det-addr a { font-size:12px; color:#6B859B; text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-weight:400; }
+.det-foot { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.det-links { display:flex; gap:6px; }
+.lnk {
+  font-size:12px; text-decoration:none; padding:5px 13px; border-radius:var(--r-pill); font-weight:400;
+  font-family:var(--font);
+}
+.lnk:active { opacity:0.7; }
+.lnk-w { color:#4A6585; background:rgba(74,101,133,0.08); }
+.lnk-x { color:#FE2C55; background:rgba(254,44,85,0.06); }
+.st-sel {
+  font-size:12px; padding:5px 13px; border-radius:var(--r-pill); border:none;
+  cursor:pointer; font-weight:400; font-family:var(--font);
+  appearance:none; -webkit-appearance:none;
+}
+
+/* empty */
+.empty { text-align:center; padding:3rem 1rem; color:var(--text-3); font-size:14px; font-style:italic; display:none; font-weight:300; }
+
+/* status bar */
+.sbar {
+  position:fixed; bottom:0; left:0; right:0;
+  background:var(--bg-card); border-top:1px solid var(--border);
+  padding:8px 0; padding-bottom:max(8px, env(safe-area-inset-bottom));
+  z-index:100;
+}
+.sbar-in { max-width:480px; margin:0 auto; display:flex; }
+.sb { flex:1; text-align:center; cursor:pointer; padding:4px 0; }
+.sb:active { transform:scale(0.95); }
+.sb-d { width:1px; background:var(--border); align-self:stretch; }
+.sb-n { font-size:18px; font-weight:600; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
+.sb-l { font-size:11px; margin-top:1px; font-weight:300; }
+.sb-0 .sb-n { color:#5C4E30; } .sb-0 .sb-l { color:#7A6E62; }
+.sb-1 .sb-n { color:#2E4F6E; } .sb-1 .sb-l { color:#4A6585; }
+.sb-2 .sb-n { color:#3D5A2D; } .sb-2 .sb-l { color:#5A7247; }
+
+@keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+.cd { animation: fadeUp 0.2s ease-out; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hdr">
+    <div>
+      <div class="hdr-en" id="hEN">WHIMSY IN THE FOG</div>
+      <div class="hdr-zh" id="hZH">山雾来趣</div>
+      <div class="hdr-sub" id="hSub">湾区生活灵感库</div>
+    </div>
+    <button class="lang-btn" id="lBtn" onclick="tgLang()">EN</button>
+  </div>
+  <div class="search-row">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" class="search-input" id="sBox" oninput="doSearch(this.value)" />
+    </div>
+    <div class="qbtns">
+      <button class="qbtn" id="wBtn" onclick="tgQ('wk')"></button>
+      <button class="qbtn" id="tBtn" onclick="tgQ('tn')"></button>
+    </div>
+  </div>
+  <div class="cal" id="calBar"><div class="cal-t" id="calT"></div><div id="calI"></div></div>
+  <div class="tabs" id="tabs"></div>
+  <div class="flts" id="flts"></div>
+  <div class="cds" id="cds"></div>
+  <div class="empty" id="emp"></div>
+</div>
+<div class="sbar"><div class="sbar-in">
+  <div class="sb sb-0" onclick="fSt('感兴趣')"><div class="sb-n" id="sn0">0</div><div class="sb-l" id="sl0"></div></div>
+  <div class="sb-d"></div>
+  <div class="sb sb-1" onclick="fSt('已报名')"><div class="sb-n" id="sn1">0</div><div class="sb-l" id="sl1"></div></div>
+  <div class="sb-d"></div>
+  <div class="sb sb-2" onclick="fSt('已完成')"><div class="sb-n" id="sn2">0</div><div class="sb-l" id="sl2"></div></div>
+</div></div>
+
+<script>
+/* ========== DATA VERSION — bump on every update ========== */
+const VER = 1;
+
+/* ========== i18n ========== */
+let L = 'zh';
+const I = {
+  sub:    { zh:'湾区生活灵感库', en:'Bay Area inspiration for the curious' },
+  search: { zh:'在雾中搜索...', en:'Search in the fog...' },
+  wk:     { zh:'周末去哪', en:'Weekend' },
+  tn:     { zh:'今晚有空', en:'Tonight' },
+  cal:    { zh:'UPCOMING', en:'UPCOMING' },
+  more:   { zh:'详情 ▾', en:'more ▾' },
+  less:   { zh:'收起 ▴', en:'less ▴' },
+  exp:    { zh:'已过期', en:'expired' },
+  dl:     { zh:'天', en:'d' },
+  su:     { zh:'报名', en:'signup' },
+  tm:     { zh:'时间', en:'Time' },
+  dt:     { zh:'日期', en:'Date' },
+  ddl:    { zh:'报名截止', en:'Deadline' },
+  web:    { zh:'官网', en:'Website' },
+  xhs:    { zh:'小红书', en:'XHS' },
+  emp:    { zh:'没有找到匹配的活动', en:'No matching activities found' },
+  clr:    { zh:'清除', en:'Clear' },
+  any:    { zh:'随时', en:'Anytime' },
+  frm:    { zh:'起', en:'from' },
+  by:     { zh:'截止', en:'by' },
+  sb:     { zh:['感兴趣','已报名','已完成'], en:['Interested','Enrolled','Done'] },
+  so:     { zh:['未标记','感兴趣','已报名','已完成'], en:['—','Interested','Enrolled','Done'] },
+};
+
+/* ========== CATEGORIES ========== */
+const CATS = [
+  { id:'all',      zh:'全部',  en:'All',      c:'#888' },
+  { id:'instant',  zh:'即时妙想', en:'Instant Whimsy', c:'#C4956B' },
+  { id:'craft',    zh:'手工',  en:'Craft',    c:'#C2927A' },
+  { id:'dance',    zh:'舞蹈',  en:'Dance',    c:'#B07A93' },
+  { id:'show',     zh:'演出',  en:'Shows',    c:'#8B7E9B' },
+  { id:'music',    zh:'音乐',  en:'Music',    c:'#6B8F6B' },
+  { id:'food',     zh:'美食',  en:'Food',     c:'#B89B5E' },
+  { id:'family',   zh:'亲子',  en:'Family',   c:'#6B859B' },
+  { id:'wellness', zh:'身心',  en:'Wellness', c:'#7BA68E' },
+];
+
+/* ========== TAGS ========== */
+const TG = {
+  timed:   { zh:'限时',   en:'Limited',   bg:'#F7EDE7', c:'#6E3F1F' },
+  ongoing: { zh:'随时去', en:'Anytime',   bg:'#EDF3E8', c:'#3D5A2D' },
+  series:  { zh:'连续课', en:'Series',    bg:'#F0ECF5', c:'#4A3D66' },
+  single:  { zh:'单次',   en:'One-time',  bg:'#E8EEF5', c:'#2E4F6E' },
+  reserve: { zh:'需预约', en:'Book ahead',bg:'#F5F0E5', c:'#5C4E30' },
+  walkin:  { zh:'直接去', en:'Walk-in',   bg:'#E8F2EE', c:'#2A5445' },
+  nearby:  { zh:'离家近', en:'Nearby',    bg:'#F1EFE8', c:'#4E4A42' },
+  indoor:  { zh:'室内',   en:'Indoor',    bg:'#E8EEF5', c:'#2E4F6E' },
+  outdoor: { zh:'室外',   en:'Outdoor',   bg:'#EDF3E8', c:'#3D5A2D' },
+};
+
+const LT = {
+  anytime:  { zh:'随时可约', en:'Book anytime' },
+  '1week':  { zh:'提前1周',  en:'1 wk ahead' },
+  '2weeks': { zh:'提前2周',  en:'2 wks ahead' },
+  '1month': { zh:'提前1个月',en:'1 mo ahead' },
+};
+
+const SC = {
+  '未标记':  { bg:'var(--bg-detail)', c:'var(--text-2)' },
+  '感兴趣': { bg:'#F5F0E5', c:'#5C4E30' },
+  '已报名': { bg:'#E8EEF5', c:'#2E4F6E' },
+  '已完成': { bg:'#EDF3E8', c:'#3D5A2D' },
+};
+
+/* ============================================================
+   ACTIVITIES — edit this array to add/update activities
+   ============================================================ */
+const A = [
+  {
+    id: 1,
+    name: { zh:'Kitschy Kitchenware 陶艺课', en:'Kitschy Kitchenware Pottery' },
+    cat: 'craft',
+    venue: 'Clayroom San Mateo',
+    addr: '50 E 3rd Ave, San Mateo, CA',
+    tags: ['timed','series','reserve','nearby','indoor'],
+    deadline: '2026-04-20',
+    dateStart: '2026-05-01',
+    dateEnd: '2026-06-05',
+    time: { zh:'周四 6:30-9:00PM', en:'Thu 6:30-9:00PM' },
+    price: '$295/6wk',
+    dur: { zh:'2.5小时/次 × 6周', en:'2.5hr × 6wk' },
+    age: { zh:'成人', en:'Adults' },
+    lead: '1month',
+    url: 'https://www.clayroomsanmateo.com/service-page/kitschy-kitchenware-session-3',
+    xhs: null,
+    note: { zh:'小红书看到很多人推荐。6周课程学做厨房小物件——马克杯、小碗、调料罐等。需要自备围裙，材料费全包。作品完成后需等2周烧制取回。', en:'Popular on Xiaohongshu. 6-week course making kitchen items — mugs, bowls, spice jars. Bring your own apron, materials included. Allow 2 weeks for firing.' },
+    status: '感兴趣',
+  },
+  {
+    id: 2,
+    name: { zh:'Intro to Clay 陶艺入门', en:'Intro to Clay' },
+    cat: 'craft',
+    venue: 'Clayroom San Mateo',
+    addr: '50 E 3rd Ave, San Mateo, CA',
+    tags: ['timed','series','reserve','nearby','indoor'],
+    deadline: null, dateStart: null, dateEnd: null,
+    time: { zh:'多个时间段可选', en:'Multiple sessions' },
+    price: '$295/6wk',
+    dur: { zh:'2.5小时/次 × 6周', en:'2.5hr × 6wk' },
+    age: { zh:'成人', en:'Adults' },
+    lead: '1month',
+    url: 'https://www.clayroomsanmateo.com/pottery-classes',
+    xhs: null,
+    note: { zh:'零基础入门课，学拉坯和上釉。比Kitschy更基础，适合完全没碰过陶艺的。', en:'True beginner course — wheel throwing & glazing basics. More foundational than Kitschy.' },
+    status: '未标记',
+  },
+  {
+    id: 3,
+    name: { zh:'Clay Life 陶艺体验', en:'Clay Life Experience' },
+    cat: 'craft',
+    venue: 'The Clay Life',
+    addr: '1427 Industrial Rd, San Carlos, CA',
+    tags: ['ongoing','single','reserve','indoor'],
+    deadline: null, dateStart: null, dateEnd: null,
+    time: { zh:'见官网', en:'See website' },
+    price: '~$80',
+    dur: { zh:'约2小时', en:'~2 hours' },
+    age: { zh:'适合8岁+', en:'Ages 8+' },
+    lead: '1week',
+    url: 'https://theclaylife.com/introductory-classes/',
+    xhs: null,
+    note: { zh:'单次体验课，适合先试试看再决定要不要报长期课。San Carlos离家不远。', en:'Single session trial — great way to test before committing. Nearby in San Carlos.' },
+    status: '未标记',
+  },
+  {
+    id: 4,
+    name: { zh:'歌剧魅影 Phantom of the Opera', en:'Phantom of the Opera' },
+    cat: 'show',
+    venue: 'San Jose Center for Performing Arts',
+    addr: '255 S Almaden Blvd, San Jose, CA',
+    tags: ['timed','single','reserve','indoor'],
+    deadline: '2026-10-07',
+    dateStart: '2026-10-07',
+    dateEnd: '2026-10-18',
+    time: { zh:'多场次可选', en:'Multiple showtimes' },
+    price: '$50–200',
+    dur: { zh:'约2.5小时', en:'~2.5 hours' },
+    age: { zh:'适合10岁+', en:'Ages 10+' },
+    lead: '1month',
+    url: 'https://broadwaysanjose.com/shows/phantom-of-the-opera/',
+    xhs: null,
+    note: { zh:'经典百老汇巡演来San Jose！10月限定。座位选Orchestra中间靠前体验最好。可以带大孩子。', en:'Classic Broadway touring production in San Jose! Oct only. Orchestra center-front seats recommended.' },
+    status: '感兴趣',
+  },
+  {
+    id: 5,
+    name: { zh:'Candlelight Concert 烛光音乐会', en:'Candlelight Concert' },
+    cat: 'music',
+    venue: { zh:'多个场地', en:'Various venues' },
+    addr: 'San Francisco / San Jose',
+    tags: ['ongoing','single','reserve','indoor'],
+    deadline: null, dateStart: null, dateEnd: null,
+    time: { zh:'每周多场', en:'Multiple weekly' },
+    price: '$30–65',
+    dur: { zh:'约1小时', en:'~1 hour' },
+    age: { zh:'适合6岁+', en:'Ages 6+' },
+    lead: '1week',
+    url: 'https://feverup.com/sf/candlelight',
+    xhs: null,
+    note: { zh:'烛光氛围超棒，有古典、流行、动漫等各种主题。Fever app选场次，建议选SF venue氛围更好。', en:'Amazing candlelit ambiance — classical, pop, anime themes. Book on Fever app. SF venues have better atmosphere.' },
+    status: '未标记',
+  },
+  {
+    id: 6,
+    name: { zh:'85fun 街舞体验', en:'85fun Street Dance' },
+    cat: 'dance',
+    venue: '85fun Dance Studio',
+    addr: 'San Mateo, CA',
+    tags: ['ongoing','single','walkin','nearby','indoor'],
+    deadline: null, dateStart: null, dateEnd: null,
+    time: { zh:'见课表', en:'See schedule' },
+    price: '$15–25',
+    dur: { zh:'约1小时', en:'~1 hour' },
+    age: { zh:'成人', en:'Adults' },
+    lead: 'anytime',
+    url: null,
+    xhs: null,
+    note: { zh:'就在San Mateo，Hip Hop、K-pop、Jazz各种风格。直接walk-in试课，不需要提前预约。', en:'Right in San Mateo — Hip Hop, K-pop, Jazz styles. Walk-in friendly, no booking needed.' },
+    status: '未标记',
+  },
+  {
+    id: 101,
+    name: { zh:'点一杯奶茶犒劳自己', en:'Order a boba treat' },
+    cat: 'instant',
+    venue: { zh:'外卖到家/办公室', en:'Delivery' },
+    addr: '',
+    tags: ['ongoing','walkin','indoor'],
+    deadline: null, dateStart: null, dateEnd: null,
+    time: null,
+    price: '$6–9',
+    dur: { zh:'5分钟下单', en:'5 min to order' },
+    age: null,
+    lead: 'anytime',
+    url: null,
+    xhs: null,
+    note: { zh:'推荐：Teaspoon的桃子乌龙、Sunright的杨枝甘露、TP Tea的铁观音拿铁。工作到下午3点的时候来一杯，整个下午都不一样。', en:'Rec: Teaspoon peach oolong, Sunright mango sago, TP Tea tieguanyin latte. A 3pm pick-me-up changes the whole afternoon.' },
+    status: '未标记',
+  },
+  {
+    id: 102,
+    name: { zh:'自制一杯抹茶拿铁', en:'Make a matcha latte' },
+    cat: 'instant',
+    venue: { zh:'自家厨房', en:'Home kitchen' },
+    addr: '',
+    tags: ['ongoing','walkin','indoor'],
+    deadline: null, dateStart: null, dateEnd: null,
+    time: null,
+    price: null,
+    dur: { zh:'3分钟', en:'3 min' },
+    age: null,
+    lead: 'anytime',
+    url: null,
+    xhs: null,
+    note: { zh:'抹茶粉+燕麦奶+蜂蜜，用奶泡器打出绵密泡沫。配一块小饼干，就是自己的下午茶时间。', en:'Matcha powder + oat milk + honey, froth until creamy. Pair with a cookie for your own little tea time.' },
+    status: '未标记',
+  },
+  {
+    id: 103,
+    name: { zh:'给自己点一份心仪的午餐', en:'Order a special lunch' },
+    cat: 'instant',
+    venue: { zh:'外卖到家/办公室', en:'Delivery' },
+    addr: '',
+    tags: ['ongoing','walkin','indoor'],
+    deadline: null, dateStart: null, dateEnd: null,
+    time: null,
+    price: '$15–25',
+    dur: { zh:'5分钟下单', en:'5 min to order' },
+    age: null,
+    lead: 'anytime',
+    url: null,
+    xhs: null,
+    note: { zh:'不是随便凑合，是认真挑一家想吃的。推荐：Ramen Nagi、鼎泰丰、Zareen\'s的chicken biryani。吃好了下午效率翻倍。', en:'Not settling — deliberately choosing something you crave. Ramen Nagi, Din Tai Fung, Zareen\'s chicken biryani. A good lunch fuels the whole afternoon.' },
+    status: '未标记',
+  },
+  {
+    id: 104,
+    name: { zh:'买一束花放桌上', en:'Buy yourself flowers' },
+    cat: 'instant',
+    venue: { zh:'Trader Joe\'s / 花店', en:'Trader Joe\'s / florist' },
+    addr: '',
+    tags: ['ongoing','walkin'],
+    deadline: null, dateStart: null, dateEnd: null,
+    time: null,
+    price: '$5–15',
+    dur: { zh:'顺路5分钟', en:'5 min detour' },
+    age: null,
+    lead: 'anytime',
+    url: null,
+    xhs: null,
+    note: { zh:'Trader Joe\'s的花束$5起，便宜又好看。放在书桌或餐桌上，每次看到心情都会好。不需要理由，自己开心就够了。', en:'TJ\'s bouquets from $5 — cheap and beautiful. On your desk or dining table, every glance lifts your mood. No occasion needed.' },
+    status: '未标记',
+  },
+  {
+    id: 105,
+    name: { zh:'认真听一张新专辑', en:'Listen to a new album' },
+    cat: 'instant',
+    venue: { zh:'随时随地', en:'Anywhere' },
+    addr: '',
+    tags: ['ongoing','walkin','indoor'],
+    deadline: null, dateStart: null, dateEnd: null,
+    time: null,
+    price: null,
+    dur: { zh:'30–50分钟', en:'30–50 min' },
+    age: null,
+    lead: 'anytime',
+    url: null,
+    xhs: null,
+    note: { zh:'不是当背景音乐，是戴上耳机认真听完一整张。Spotify的Release Radar或New Music Friday里挑一张封面好看的，给自己一段沉浸的时间。', en:'Not background noise — put on headphones and listen through. Pick one from Spotify\'s Release Radar with a cover that catches your eye. Gift yourself immersion.' },
+    status: '未标记',
+  },
+];
+
+/* ========== STATE ========== */
+let cat='all', tag=null, q='', sf=null, eid=null, qm=null, sd={};
+const NOW=new Date(), SK='fogwhimsy_v1';
+try{const s=localStorage.getItem(SK);if(s)sd=JSON.parse(s);}catch(e){}
+A.forEach(a=>{if(sd[a.id])a.status=sd[a.id];});
+function save(){const d={};A.forEach(a=>d[a.id]=a.status);try{localStorage.setItem(SK,JSON.stringify(d));}catch(e){}}
+
+/* ========== HELPERS ========== */
+function tx(o){return typeof o==='string'?o:(o[L]||o.zh);}
+function isX(a){if(!a.deadline&&!a.dateEnd)return false;return new Date(a.dateEnd||a.deadline)<NOW;}
+function dTo(d){if(!d)return null;return Math.ceil((new Date(d)-NOW)/864e5);}
+function gm(addr){return 'https://maps.google.com/?q='+encodeURIComponent(addr);}
+function fs(d){if(!d)return '';const x=new Date(d);return(x.getMonth()+1)+'/'+x.getDate();}
+function db(a){
+  if(a.dateStart&&a.dateEnd)return fs(a.dateStart)+' – '+fs(a.dateEnd);
+  if(a.dateStart)return fs(a.dateStart)+' '+I.frm[L];
+  if(a.deadline)return I.by[L]+' '+fs(a.deadline);
+  if(a.tags.includes('ongoing'))return I.any[L];
+  return '';
+}
+function gc(id){const c=CATS.find(x=>x.id===id);return c?c.c:'#888';}
+
+/* ========== FILTER ========== */
+function gF(){
+  let l=[...A];
+  if(cat!=='all')l=l.filter(a=>a.cat===cat);
+  if(tag)l=l.filter(a=>a.tags.includes(tag));
+  if(sf)l=l.filter(a=>a.status===sf);
+  if(qm==='wk')l=l.filter(a=>!isX(a)&&(a.tags.includes('ongoing')||a.tags.includes('walkin'))&&a.tags.includes('single'));
+  if(qm==='tn')l=l.filter(a=>!isX(a)&&(a.tags.includes('ongoing')||a.tags.includes('walkin'))&&a.tags.includes('single')&&(a.lead==='anytime'||a.lead==='1week'));
+  if(q){const s=q.toLowerCase();l=l.filter(a=>tx(a.name).toLowerCase().includes(s)||tx(a.venue).toLowerCase().includes(s)||a.addr.toLowerCase().includes(s)||(a.note&&tx(a.note).toLowerCase().includes(s)));}
+  l.sort((a,b)=>{const ea=isX(a),eb=isX(b);if(ea!==eb)return ea?1:-1;const da=a.deadline?new Date(a.deadline):new Date('9999-12-31');const db_=b.deadline?new Date(b.deadline):new Date('9999-12-31');return da-db_;});
+  return l;
+}
+
+/* ========== RENDER ========== */
+function rH(){
+  document.getElementById('hSub').textContent=I.sub[L];
+  document.getElementById('sBox').placeholder=I.search[L];
+  document.getElementById('wBtn').textContent=I.wk[L];
+  document.getElementById('tBtn').textContent=I.tn[L];
+  document.getElementById('calT').textContent=I.cal[L];
+  document.getElementById('lBtn').textContent=L==='zh'?'EN':'中';
+  document.getElementById('emp').textContent=I.emp[L];
+  const s=I.sb[L];for(let i=0;i<3;i++)document.getElementById('sl'+i).textContent=s[i];
+}
+function rT(){
+  document.getElementById('tabs').innerHTML=CATS.map(c=>{
+    const on=c.id===cat;const n=c.id==='all'?A.length:A.filter(a=>a.cat===c.id).length;
+    if(c.id!=='all'&&n===0)return '';
+    return `<button class="tab${on?' on':''}" onclick="sTab('${c.id}')"${on?' style="background:'+c.c+';border-color:'+c.c+'"':''}>${c[L]}${n>0&&c.id!=='all'?' '+n:''}</button>`;
+  }).join('');
+}
+function rF(){
+  const order=['timed','ongoing','series','single','reserve','walkin','nearby','indoor','outdoor'];
+  let h=order.map(k=>{const t=TG[k];const on=tag===k;return `<button class="flt${on?' on':''}" onclick="sTg('${k}')" style="background:${t.bg};color:${t.c};">${t[L]}</button>`;}).join('');
+  if(sf)h+=`<button class="flt-clr" onclick="cSf()">${I.clr[L]} ✕</button>`;
+  document.getElementById('flts').innerHTML=h;
+}
+function rCal(){
+  const up=A.filter(a=>!isX(a)&&(a.dateStart||a.deadline)).sort((a,b)=>new Date(a.dateStart||a.deadline)-new Date(b.dateStart||b.deadline)).slice(0,4);
+  const bar=document.getElementById('calBar');
+  if(!up.length){bar.style.display='none';return;}
+  bar.style.display='block';
+  document.getElementById('calI').innerHTML=up.map(a=>{
+    const c=gc(a.cat);const dl=dTo(a.deadline);const u=dl!==null&&dl>0&&dl<=14;
+    return `<div class="cal-i"><span class="cal-dot" style="background:${c}"></span><span class="cal-d">${db(a)}</span><span class="cal-n">${tx(a.name)}</span>${u?`<span class="cal-u">${dl}${I.dl[L]}</span>`:''}</div>`;
+  }).join('');
+}
+function rC(){
+  const l=gF();const el=document.getElementById('cds');const em=document.getElementById('emp');
+  if(!l.length){el.innerHTML='';em.style.display='block';return;}
+  em.style.display='none';
+  el.innerHTML=l.map(a=>{
+    const x=isX(a);const c=gc(a.cat);const dl=dTo(a.deadline);const u=dl!==null&&dl>0&&dl<=14;
+    const sc=SC[a.status]||SC['未标记'];const op=eid===a.id;const d=db(a);
+    const lt=LT[a.lead]?LT[a.lead][L]:'';
+    const mp=[];if(a.dur)mp.push(tx(a.dur));if(a.age)mp.push(tx(a.age));if(a.price)mp.push(a.price);
+    const lks=[];if(a.url)lks.push(`<a href="${a.url}" target="_blank" rel="noopener" class="lnk lnk-w">${I.web[L]}</a>`);
+    if(a.xhs)lks.push(`<a href="${a.xhs}" class="lnk lnk-x">${I.xhs[L]}</a>`);
+    const so=I.so[L];const sv=I.so.zh;
+    const dc=x?'dead':a.tags.includes('ongoing')?'ongoing':'timed';
+    const ft=a.tags.filter(t=>!['indoor','outdoor'].includes(t));
+    const et=a.tags.filter(t=>['indoor','outdoor'].includes(t));
+    return `<div class="cd${x?' exp':''}" style="border-left-color:${c}">
+<div class="cd-sum" onclick="tgE(${a.id})">
+<div class="cd-r1"><span class="cd-nm">${tx(a.name)}${x?' <span class="cd-ex">'+I.exp[L]+'</span>':''}</span>
+<div class="cd-da">${d?`<div class="cd-db ${dc}">${d}</div>`:''}${u?`<div class="cd-urg">${dl}${I.dl[L]} ${I.su[L]}</div>`:''}</div></div>
+<div class="cd-ven">${tx(a.venue)}</div>
+<div class="cd-meta">${mp.join(' · ')}</div>
+<div class="cd-tags"><div class="cd-tl">
+${ft.map(t=>`<span class="pill" style="background:${TG[t].bg};color:${TG[t].c}">${TG[t][L]}</span>`).join('')}
+${et.map(t=>`<span class="pill" style="background:${TG[t].bg};color:${TG[t].c}">${TG[t][L]}</span>`).join('')}
+${lt?`<span class="lead">${lt}</span>`:''}
+</div><span class="cd-hint">${op?I.less[L]:I.more[L]}</span></div>
+</div>
+${op?`<div class="cd-det">
+${a.time?`<div class="det-r">${I.tm[L]}：${tx(a.time)}</div>`:''}
+${a.dateStart?`<div class="det-r">${I.dt[L]}：${a.dateStart}${a.dateEnd?' → '+a.dateEnd:''}${a.deadline?'<br>'+I.ddl[L]+'：'+a.deadline:''}</div>`:''}
+${a.note?`<div class="det-note">${tx(a.note)}</div>`:''}
+<div class="det-addr"><a href="${gm(a.addr)}" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${a.addr}</a></div>
+<div class="det-foot"><div class="det-links">${lks.join('')}</div>
+<select class="st-sel" onchange="sSt(${a.id},this.value);event.stopPropagation()" style="background:${sc.bg};color:${sc.c}">
+${sv.map((s,i)=>`<option value="${s}"${a.status===s?' selected':''}>${so[i]}</option>`).join('')}
+</select></div></div>`:''}
+</div>`;
+  }).join('');
+}
+function rSb(){
+  const c={'感兴趣':0,'已报名':0,'已完成':0};
+  A.forEach(a=>{if(c[a.status]!==undefined)c[a.status]++;});
+  const k=['感兴趣','已报名','已完成'];
+  k.forEach((s,i)=>{document.getElementById('sn'+i).textContent=c[s];document.getElementById('sn'+i).parentElement.style.opacity=sf===s?'1':sf?'0.3':'1';});
+}
+function rQ(){
+  const w=document.getElementById('wBtn'),t=document.getElementById('tBtn');
+  w.className='qbtn'+(qm==='wk'?' q-wk':'');
+  t.className='qbtn'+(qm==='tn'?' q-tn':'');
+}
+function R(){rH();rT();rF();rCal();rC();rSb();rQ();}
+
+/* ========== EVENTS ========== */
+window.sTab=function(id){cat=id;tag=null;R();};
+window.sTg=function(t){tag=tag===t?null:t;R();};
+window.doSearch=function(v){q=v.trim();rC();};
+window.tgE=function(id){eid=eid===id?null:id;rC();};
+window.sSt=function(id,v){const a=A.find(x=>x.id===id);if(a){a.status=v;save();rC();rSb();}};
+window.fSt=function(s){sf=sf===s?null:s;R();};
+window.cSf=function(){sf=null;R();};
+window.tgQ=function(m){qm=qm===m?null:m;R();};
+window.tgLang=function(){L=L==='zh'?'en':'zh';R();};
+
+R();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
